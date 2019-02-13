@@ -1,0 +1,77 @@
+1. Data preparation
+  (1) 原始資料目錄架構: trainset, trainset_xml, testset, testnet_xml (用labelImg標註產生之PASCAL VOC格式)
+  (2) 產生YOLO format: python out4yoloLabel.py --dataset ~/data/n5_tunnel_extracted_images_darknet_1000/testset --xmlset ~/data/n5_tunnel_extracted_images_darknet_1000/testset_xml --mergein yes
+                   python out4yoloLabel.py --dataset ~/data/n5_tunnel_extracted_images_darknet_1000/trainset --xmlset ~/data/n5_tunnel_extracted_images_darknet_1000/trainset_xml --mergein yes
+  (3) 輸出檔案(output/yoloLabels/PID_XXXX/): myYolo_list.txt
+      將清單重新命名為trainset.txt和testset.txt
+  (3) 建立obj.data及對應的其它設定檔
+      classes= 4
+      train = /home/j/git/darknet.git/n5_tunnel_1000/trainset.txt
+      valid = /home/j/git/darknet.git/n5_tunnel_1000/testset.txt
+      names = /home/j/git/darknet.git/n5_tunnel_1000/vehicle_classes.names
+      backup = /home/j/git/darknet.git/n5_tunnel_1000/backup  (建立空目錄)
+
+2. 模型訓練
+ （1) 建立yolo cfg
+	############## yolo-v1 cfg customization ###############
+	[connected]
+	output= 686    # [side]*[side]*([num]*5+[classes])  for yolo-v1
+	activation=linear
+	
+	[detection]
+	classes=4       # Number of object classes, corresponding to your .names setting
+	coords=4
+	rescore=1
+	side=7  # forms a [side]*[side] grids
+	num=2   # how many bounding boxes to predict for a cell in the [side]*[side] grids
+	softmax=0
+	sqrt=1
+	jitter=.2
+	
+	 ############## yolo-v2 cfg customization ###############
+	[convolutional]
+	size=1
+	stride=1
+	pad=1
+	filters=45      # filters=([classes] + 5)*[num]
+	activation=linear
+	
+	[region]
+	anchors =  1.3221, 1.73145, 3.19275, 4.00944, 5.05587, 8.09892, 9.47112, 4.84053, 11.2364, 10.0071
+	bias_match=1
+	classes=4   # Number of object classes, corresponding to your .names setting
+	coords=4
+	num=5       # how many bounding boxes to predict for a cell in the 13*13 grids
+	softmax=1
+	jitter=.3
+	rescore=1
+	
+	 ############## yolo-v3 cfg customization ###############
+	[convolutional]
+	size=1
+	stride=1
+	pad=1
+	filters=27    # filters=([classes] + 5) * 3
+	activation=linear
+	
+	[yolo]
+	mask = 0,1,2
+	anchors = 10,13,  16,30,  33,23,  30,61,  62,45,  59,119,  116,90,  156,198,  373,326
+	classes=4    # Number of object classes, corresponding to your .names setting
+	num=9
+	jitter=.3
+	ignore_thresh = .5
+	truth_thresh = 1
+	random=1
+
+
+(2) for yolo-v3 下載darknet53.conv.74
+(3) darknet detector train n5_tunnel_1000/obj.data n5_tunnel_1000/yolov3-tiny-n5-tunnel.cfg darknet53.conv.74
+
+-> 執行訓練時有錯誤: Couldn't open file: /home/j/data/n5_tunnel_extracted_labels_darknet_1000/trainset/./160169.txt
+-> image字串會被取代為label以取得標註的設定檔!!!!!
+   (詳 ~/git/darknet.git/src $ grep find_replace *)
+-> 把txt檔案改放到獨立目錄n5_tunnel_extracted_labels_darknet_1000即可, 或不要用image當訓練圖片目錄
+
+
+

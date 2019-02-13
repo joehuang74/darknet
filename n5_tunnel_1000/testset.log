@@ -1,0 +1,19 @@
+|-------------------------------|
+|  Sytem information   |
+|-------------------------------|
+dataset                    : /home/j/data/n5_tunnel_extracted_images_darknet_1000/testset
+label text file            : 
+Log file                    : output/yoloLabels/PID_2194/PID_2194.log
+classes lables(4)= sedan,van,bus,truck
+xmlset                    : /home/j/data/n5_tunnel_extracted_images_darknet_1000/testset_xml
+
+directoriy "." not the label name for the classes
+
+=============<<<  Result  >>>=============
+[ %YOLO format Annotations% ] unit: items
+   sedan : 262
+   van : 269
+   bus : 31
+   truck : 32
+
+======================================
