@@ -46,7 +46,7 @@
 	jitter=.3
 	rescore=1
 	
-	 ############## yolo-v3 cfg customization ###############
+	 ############## yolo-v3 cfg customization (tiny版有2個地方要改, voc版有3個) ###############
 	[convolutional]
 	size=1
 	stride=1
