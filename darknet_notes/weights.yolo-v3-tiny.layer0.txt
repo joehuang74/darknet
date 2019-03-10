@@ -1,5 +1,6 @@
 Print layer-0 trained weights for yolo-v3-tiny network filters: darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 0
 Print for all layers: darknet print_all cfg/yolov3-tiny.cfg darknet53.conv.74
+Refer to scripts/print_weights.sh and scripts/print_weights_all.sh.
 
 For layer-0, the filter size is 3x3 and an input image has 3 channels, so actually a filter will be trained three times for each channel, ie. each filter vector has dimension of 3x3x3=27;
              and 16 filters are trained, this is why we see 16 rows printed.

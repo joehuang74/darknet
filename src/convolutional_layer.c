@@ -207,6 +207,7 @@ convolutional_layer make_convolutional_layer(int batch, int h, int w, int c, int
     //scale = .02;
     //for(i = 0; i < c*n*size*size; ++i) l.weights[i] = scale*rand_uniform(-1, 1);
     for(i = 0; i < l.nweights; ++i) l.weights[i] = scale*rand_normal();
+    //for(i = 0; i < l.nweights; ++i) l.weights[i] = 0; // tmptest
     int out_w = convolutional_out_width(l);
     int out_h = convolutional_out_height(l);
     l.out_h = out_h;

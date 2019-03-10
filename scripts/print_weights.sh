@@ -1,21 +1,19 @@
 #!/bin/bash
+# Print network filter trained weights for one of the convolutional layers, the conv weights have been initialized randomly with normal distribution,
+#  so the weights still "appear to be fine" even if the weight file does not match with the network config. See convolutional_layer.c for details:
+#  for(i = 0; i < l.nweights; ++i) l.weights[i] = scale*rand_normal();
+#  Change scale*rand_normal() to 0 and print_weights again, when the weight file does not contain enough weights, you can see 0 being printed.
+
 cd ..
 
 # Print layer-0 weights
 ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 0
-
-# See what happens if cfg and weights do no match (Still look fine!?)
-#./darknet print n5_tunnel_1000/yolov3-tiny-n5-tunnel.cfg darknet53.conv.74 0  # This cfg has only 27 filters for layer-22
-#./darknet print cfg/yolov3-tiny.cfg n5_tunnel_1000/backup/yolov3-tiny-n5-tunnel-training-gpu.backup 0 # This weights are trained with cfg which has only 27 filters for layer-22
-#./darknet print cfg/yolov3-tiny.cfg extraction.conv.weights 0 # This weights are not for yolo-v3
+#./darknet print cfg/yolov3-tiny.cfg darknet.weights 0 # This weights are not for yolo-v3, see what happens
 
 # Print layer-6 weights
-#./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 6
+./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 6
+#./darknet print cfg/yolov3-tiny.cfg darknet.weights 6 # This weights are not for yolo-v3, see what happens
 
 # Print layer-22 weights
-#./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 22
-
-# See what happens if cfg and weights do no match (Still look fine!?)
-#./darknet print n5_tunnel_1000/yolov3-tiny-n5-tunnel.cfg darknet53.conv.74 22  # This cfg has only 27 filters for layer-22
-#./darknet print cfg/yolov3-tiny.cfg n5_tunnel_1000/backup/yolov3-tiny-n5-tunnel-training-gpu.backup 22 # This weights are trained with cfg which has only 27 filters for layer-22
-#./darknet print cfg/yolov3-tiny.cfg extraction.conv.weights 22 # This weights are not for yolo-v3
+./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 22
+#./darknet print cfg/yolov3-tiny.cfg darknet.weights 22 # This weights are not for yolo-v3, see what happens
