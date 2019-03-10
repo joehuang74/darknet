@@ -207,6 +207,58 @@ void print_weights(char *cfgfile, char *weightfile, int n)
     //printf("]");
 }
 
+void print_weights_verbose(char *cfgfile, char *weightfile, int n)
+{
+    gpu_index = -1;
+    network *net = load_network(cfgfile, weightfile, 1);
+    printf("\n###################### Network filter trained weights for layer-%d #############################\n", n);
+    layer l = net->layers[n];
+    int i, j;
+    printf("[");
+    for(i = 0; i < l.n; ++i){
+        printf("[");
+        for(j = 0; j < l.size*l.size*l.c; ++j){
+        	if(j > 0) printf("(j=%d)", j);
+            if(j > 0) printf(",");
+            printf("%g ", l.weights[i*l.size*l.size*l.c + j]);
+        }
+        printf("(j=%d)", j);
+        printf("\n");
+        printf("] ===== filter i=%d =====%s\n", i,(i == l.n-1)?"":",");
+    }
+    printf("]");
+}
+
+// Print weights for all layers
+void print_weights_all(char *cfgfile, char *weightfile)
+{
+	list *sections = read_cfg(cfgfile);
+	printf("Network size: %d\n", sections->size-1);
+	gpu_index = -1;
+	network *net = load_network(cfgfile, weightfile, 0);
+	printf("\n###################### Network filter trained weights for each layer #############################\n");
+	for (int n=0; n<sections->size-1; n++) {
+		printf("\n======== Layer %d ========\n", n);
+		layer l = net->layers[n];
+		int i, j;
+		printf("[\n");
+		for(i = 0; i < l.n; ++i){
+			printf("[");
+			for(j = 0; j < l.size*l.size*l.c; ++j){
+				//if(j > 0) printf("(j=%d)", j);
+				//if(j > 0) printf(",");
+				//printf("%g ", l.weights[i*l.size*l.size*l.c + j]);
+			}
+			printf("(Vector dimension=%d)", j);
+			//printf("(j=%d)", j);
+			//printf("\n");
+			printf("] for filter i=%d%s\n", i,(i == l.n-1)?"":",");
+		}
+		printf("]");
+	}
+}
+
+
 void rescale_net(char *cfgfile, char *weightfile, char *outfile)
 {
     gpu_index = -1;
@@ -485,6 +537,9 @@ int main(int argc, char **argv)
         oneoff2(argv[2], argv[3], argv[4], atoi(argv[5]));
     } else if (0 == strcmp(argv[1], "print")){
         print_weights(argv[2], argv[3], atoi(argv[4]));
+        // print_weights_verbose(argv[2], argv[3], atoi(argv[4]));
+    } else if (0 == strcmp(argv[1], "print_all")){
+    	print_weights_all(argv[2], argv[3]);
     } else if (0 == strcmp(argv[1], "partial")){
         partial(argv[2], argv[3], argv[4], atoi(argv[5]));
     } else if (0 == strcmp(argv[1], "average")){
