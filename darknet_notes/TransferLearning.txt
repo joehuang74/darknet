@@ -1,0 +1,144 @@
+#1. Extract part of the trained weights
+   $ darknet partial [model cfg] [weights file] [Output weights file] [number of layers to extract(starting from layer-0)]
+   eg. darknet partial cfg/yolov3-tiny.cfg darknet53.conv.74 darknet53.conv.74.L19 19  // Extract weights from layer-0 to layer-18
+    
+   Demo: Verify if only patial weights are extracted.
+   (1) Modify the default method of initializing weights for convolutional layer
+   	   Edit make_convolutional_layer() in convolutional_layer.c,
+   	   	replace the line: for(i = 0; i < l.nweights; ++i) l.weights[i] = scale*rand_normal();
+           with the line: for(i = 0; i < l.nweights; ++i) l.weights[i] = 0; // tmptest
+       Then recompile. So that the initial weights of a convolutional weights will be all zeros when first constructed.
+   (2) Check the network structure
+       $ cd ~/git/darknet.git
+   	   $ ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 0
+   	    layer     filters    size              input                output
+    	0 conv     16  3 x 3 / 1   416 x 416 x   3   ->   416 x 416 x  16  0.150 BFLOPs
+    	1 max          2 x 2 / 2   416 x 416 x  16   ->   208 x 208 x  16
+    	2 conv     32  3 x 3 / 1   208 x 208 x  16   ->   208 x 208 x  32  0.399 BFLOPs
+    	3 max          2 x 2 / 2   208 x 208 x  32   ->   104 x 104 x  32
+    	4 conv     64  3 x 3 / 1   104 x 104 x  32   ->   104 x 104 x  64  0.399 BFLOPs
+    	5 max          2 x 2 / 2   104 x 104 x  64   ->    52 x  52 x  64
+    	6 conv    128  3 x 3 / 1    52 x  52 x  64   ->    52 x  52 x 128  0.399 BFLOPs
+    	7 max          2 x 2 / 2    52 x  52 x 128   ->    26 x  26 x 128
+    	8 conv    256  3 x 3 / 1    26 x  26 x 128   ->    26 x  26 x 256  0.399 BFLOPs
+    	9 max          2 x 2 / 2    26 x  26 x 256   ->    13 x  13 x 256
+   		10 conv    512  3 x 3 / 1    13 x  13 x 256   ->    13 x  13 x 512  0.399 BFLOPs
+   		11 max          2 x 2 / 1    13 x  13 x 512   ->    13 x  13 x 512
+   		12 conv   1024  3 x 3 / 1    13 x  13 x 512   ->    13 x  13 x1024  1.595 BFLOPs
+   		13 conv    256  1 x 1 / 1    13 x  13 x1024   ->    13 x  13 x 256  0.089 BFLOPs
+   		14 conv    512  3 x 3 / 1    13 x  13 x 256   ->    13 x  13 x 512  0.399 BFLOPs
+   		15 conv    255  1 x 1 / 1    13 x  13 x 512   ->    13 x  13 x 255  0.044 BFLOPs
+   		16 yolo
+   		17 route  13
+   		18 conv    128  1 x 1 / 1    13 x  13 x 256   ->    13 x  13 x 128  0.011 BFLOPs
+   		19 upsample            2x    13 x  13 x 128   ->    26 x  26 x 128
+   		20 route  19 8
+   		21 conv    256  3 x 3 / 1    26 x  26 x 384   ->    26 x  26 x 256  1.196 BFLOPs
+   		22 conv    255  1 x 1 / 1    26 x  26 x 256   ->    26 x  26 x 255  0.088 BFLOPs
+   		23 yolo
+		Loading weights from darknet53.conv.74...Done!
+		.........(weights of layer-0 printed)
+		From this we can see the convolutional layers of this network: 0 2 4 6 8 10 12 13 14 15 18 21 22
+   (3) Print layer-6,8,10,12,18,21,22 weights of darknet53.conv.74
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 6     # Print weight of layer-6
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 8     # Print weight of layer-8
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 10    # Print weight of layer-10
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 12    # Print weight of layer-12
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 18    # Print weight of layer-18
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 21    # Print weight of layer-21
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 22    # Print weight of layer-22
+   	   From the printed weights, we can see the values are non-zero real numbers.
+   (4) Extract partial weights from darknet53.conv.74 (From layer-0 to layer-12)
+   	   ./darknet partial cfg/yolov3-tiny.cfg darknet53.conv.74 darknet53.conv.74.L13 13     # Extract weights from layer-0 to layer-12
+   	   Loading weights from darknet53.conv.74...Done!
+       Saving weights to darknet53.conv.74.L13
+   (5) Print layer-6,8,10,12,18,21,22 weights of the extracted darknet53.conv.74.L12
+   	   ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74.L13 6     # Print weight of layer-6
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74.L13 8     # Print weight of layer-8
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74.L13 10    # Print weight of layer-10
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74.L13 12    # Print weight of layer-12
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74.L13 18    # Print weight of layer-18
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74.L13 21    # Print weight of layer-21
+       ./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74.L13 22    # Print weight of layer-22
+       From the printed weights, we can see the values are non-zero real numbers for layer-6,8,10,12,
+       while the values are all zeros for layer-18,21,22 since the weights file we provide only contains the first 13 layers of darknet53.conv.74.
+   (6) Revert the changes performed in (1) after this demo. (Change the initialization method back to scale*rand_normal();)
+ 
+#2. Freeze part of the weights during training
+ (1) Trace execution process for: darknet detector train [obj.data] [model cfg] [weights file]
+     examples/darknet.c main()
+     -> run_detector(argc, argv);
+        -> train_detector(datacfg, cfg, weights, gpus, ngpus, clear);
+            -> loss = train_network(net, train);
+                -> float err = train_network_datum(net);
+                    -> forward_network(net);
+                    -> backward_network(net);
+                           for(i = net.n-1; i >= 0; --i){
+                               layer l = net.layers[i];
+                               if(l.stopbackward) break;  //////////  parameter for stopping backward()  //////////////
+                               if(i == 0){
+                                  net = orig;
+                               }else{
+                                  layer prev = net.layers[i-1];
+                                  net.input = prev.output;
+                                  net.delta = prev.delta;
+                               }
+                               net.index = i;
+                               l.backward(l, net);
+                           }
+
+ (2) In src/network.c function backward_network(network *netp), 
+     Insert a line: printf("[Layer-%d] l.stpbackward: %d\n", i, l.stopbackward);
+     so that we can see the value of parameter l.stopbackward during execution.
+ (3) Add a parameter stopbackward=1 in the model config file in one of the layer, so that the "l.backward(l, net);" will be stoped at that layer.
+ (4) Verify if the weights really have been freezed
+     Use darknet print [model cfg] [weights file] [layer number] to check the pretrained weights and the trained weights
+
+ Demo: 
+    (1) Run training for 100 iterations(max_batches = 100)
+        cd ~/git/darknet.git
+        ./darknet detector train n5_tunnel_1000/obj.data n5_tunnel_1000/yolov3-tiny-n5-tunnel-training-gpu.cfg darknet53.conv.74
+        The result should be saved in n5_tunnel_1000/backup/yolov3-tiny-n5-tunnel-training-gpu_100.weights
+    (2) Compare the weights of darknet53.conv.74 and yolov3-tiny-n5-tunnel-training-gpu_100.weights: 
+        ./scripts/compare_weights_TransferLearning.sh
+        Weights in layer-0 is NOT the same.
+        Weights in layer-2 is NOT the same.
+        Weights in layer-4 is NOT the same.
+        Weights in layer-6 is NOT the same.
+        Weights in layer-8 is NOT the same.
+        Weights in layer-10 is NOT the same.
+        Weights in layer-12 is NOT the same.
+        Weights in layer-13 is NOT the same.
+        Weights in layer-14 is NOT the same.
+        Weights in layer-15 is NOT the same.
+        Weights in layer-18 is NOT the same.
+        Weights in layer-21 is NOT the same.
+        Weights in layer-22 is NOT the same.
+    (3) Add a parameter stopbackward=1 in layer-18 in the cfg yolov3-tiny-n5-tunnel-training-gpu.cfg, train again for 100 iterations.
+    (4) Compare again, the trained weights in layer-18 and layers before it should be the same as darknet53.conv.74.
+        ./scripts/compare_weights_TransferLearning.sh
+        Weights in layer-0 is the same.
+        Weights in layer-2 is the same.
+        Weights in layer-4 is the same.
+        Weights in layer-6 is the same.
+        Weights in layer-8 is the same.
+        Weights in layer-10 is the same.
+        Weights in layer-12 is the same.
+        Weights in layer-13 is the same.
+        Weights in layer-14 is the same.
+        Weights in layer-15 is the same.
+        Weights in layer-18 is the same.
+        Weights in layer-21 is NOT the same.
+        Weights in layer-22 is NOT the same.
+
+#3. Transfer only partial weights for training
+  (1) Extract "partial weights" of the pre-trained weights file, as mentioned in #1.
+  	  eg. darknet partial n5_tunnel_1000/yolov3-tiny-n5-tunnel-training-gpu.cfg darknet53.conv.74 darknet53.conv.74.L19 19      // Extract weights from layer-0 to layer-18
+  (2) Perform #2 again, but use this partial weights file as initialization weights for training
+      eg. darknet detector train n5_tunnel_1000/obj.data n5_tunnel_1000/yolov3-tiny-n5-tunnel-training-gpu.cfg darknet53.conv.74.L19
+  (3) Now the initialized weights of layer-0 to layer-18 will be from darknet53.conv.74.L19, 
+      the rest layers were initialized by the built-in initialation method(eg. scale*rand_normal();).
+  This is better than using the original darknet53.conv.74(As demostrated in #2), especially when you have modified the layers after layer-18 to meet your needs,
+  since the weights after layer-18 may not be suited for your new modified network architecture.
+  
+ 
