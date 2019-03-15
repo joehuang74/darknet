@@ -1,8 +1,8 @@
 #!/bin/bash
 # Demo: Transfer Learning
 # 1. Compare the weights of PRE-trained weights(darknet53.conv.74) and trained weights
-# 2. Add a parameter stopbackward=1 in layer-12 in the cfg, train and compare again, 
-#     the trained weights in layer-12 and layers before it should be the same as darknet53.conv.74.
+# 2. Add a parameter stopbackward=1 in layer-18 in the cfg, train and compare again, 
+#     the trained weights in layer-18 and layers before it should be the same as darknet53.conv.74.
 
 cd ~/git/darknet.git
 # Print weights for darknet53.conv.74 from layer-0 to layer-22
