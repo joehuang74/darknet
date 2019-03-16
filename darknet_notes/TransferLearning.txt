@@ -1,5 +1,5 @@
 #1. Extract part of the trained weights
-   $ darknet partial [model cfg] [weights file] [Output weights file] [number of layers to extract(starting from layer-0)]
+   darknet partial [model cfg] [weights file] [Output weights file] [number of layers to extract(starting from layer-0)]
    eg. darknet partial cfg/yolov3-tiny.cfg yolov3-tiny.weights yolov3-tiny.weights.L19 19  // Extract weights from layer-0 to layer-18
     
    Demo: Verify if only patial weights are extracted.
@@ -9,8 +9,9 @@
            with the line: for(i = 0; i < l.nweights; ++i) l.weights[i] = 0; // tmptest
        Then recompile. So that the initial weights of a convolutional weights will be all zeros when first constructed.
    (2) Check the network structure
-       $ cd ~/git/darknet.git
-   	   $ ./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights 0
+       cd ~/git/darknet.git
+       ./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights 0
+       ===================================================================================
    	    layer     filters    size              input                output
     	0 conv     16  3 x 3 / 1   416 x 416 x   3   ->   416 x 416 x  16  0.150 BFLOPs
     	1 max          2 x 2 / 2   416 x 416 x  16   ->   208 x 208 x  16
@@ -52,8 +53,8 @@
    	   ./darknet partial cfg/yolov3-tiny.cfg yolov3-tiny.weights yolov3-tiny.weights.L13 13     # Extract weights from layer-0 to layer-12
    	   Loading weights from yolov3-tiny.weights...Done!
        Saving weights to yolov3-tiny.weights.L13
-   (5) Print layer-6,8,10,12,18,21,22 weights of the extracted yolov3-tiny.weights.L12
-   	   ./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights.L13 6     # Print weight of layer-6
+   (5) Print layer-6,8,10,12,18,21,22 weights of the extracted yolov3-tiny.weights.L13
+       ./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights.L13 6     # Print weight of layer-6
        ./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights.L13 8     # Print weight of layer-8
        ./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights.L13 10    # Print weight of layer-10
        ./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights.L13 12    # Print weight of layer-12
@@ -133,7 +134,7 @@
 
 #3. Transfer only partial weights for training
   (1) Extract "partial weights" of the pre-trained weights file, as mentioned in #1.
-  	  eg. darknet partial n5_tunnel_1000/yolov3-tiny-n5-tunnel-training-gpu.cfg yolov3-tiny.weights yolov3-tiny.weights.L19 19      // Extract weights from layer-0 to layer-18
+      eg. darknet partial n5_tunnel_1000/yolov3-tiny-n5-tunnel-training-gpu.cfg yolov3-tiny.weights yolov3-tiny.weights.L19 19      // Extract weights from layer-0 to layer-18
   (2) Perform #2 again, but use this partial weights file as initialization weights for training
       eg. darknet detector train n5_tunnel_1000/obj.data n5_tunnel_1000/yolov3-tiny-n5-tunnel-training-gpu.cfg yolov3-tiny.weights.L19
   (3) Now the initialized weights of layer-0 to layer-18 will be from yolov3-tiny.weights.L19, 
