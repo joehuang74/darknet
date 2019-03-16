@@ -1,8 +1,16 @@
 Usages:
-Print layer-0 trained weights for yolo-v3-tiny network filters: darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights 0
-Print for all layers: darknet print_all cfg/yolov3-tiny.cfg yolov3-tiny.weights
-Save the weights to images: darknet visualize cfg/yolov3-tiny.cfg yolov3-tiny.weights
-References: scripts/print_weights.sh and scripts/print_weights_all.sh.
+1. Print layer-# trained weights for yolo-v3-tiny network filters: 
+	darknet print [model cfg] [weights file] [layer-#]
+	eg. darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights 0  // Print layer-0 weights
+2. Extract part of the trained weights
+    darknet partial [model cfg] [weights file] [Output weights file] [number of layers to extract(starting from layer-0)]
+    eg. darknet partial cfg/yolov3-tiny.cfg yolov3-tiny.weights yolov3-tiny.weights.L19 19  // Extract weights from layer-0 to layer-18
+3. Save the weights to images:
+	darknet visualize [model cfg] [weights file]
+	eg. darknet visualize cfg/yolov3-tiny.cfg yolov3-tiny.weights
+4. Print for all layers: (This works only for the darknet_study branch)
+	darknet print_all [model cfg] [weights file]
+	eg. darknet print_all cfg/yolov3-tiny.cfg yolov3-tiny.weights
 
 Notes:
 For layer-0, the filter size is 3x3 and an input image has 3 channels, so actually a filter will be trained three times for each channel, ie. each filter vector has dimension of 3x3x3=27;
@@ -11,7 +19,9 @@ For layer-2, each filter vector has dimension of 3x3x16, and there are 32 filter
 For layer-4, each filter vector has dimension of 3x3x32, and there are 64 filters.
 For layer-6, each filter vector has dimension of 3x3x64, and there are 128 filters.
 
-Demo results:
+Demo #1 print layer-0 weights
+cd ~/git/darknet.git
+./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights 0
 ====================================================================================================================
 layer     filters    size              input                output
     0 conv     16  3 x 3 / 1   416 x 416 x   3   ->   416 x 416 x  16  0.150 BFLOPs
@@ -78,7 +88,30 @@ Done!
 ]
 
 
-###################### Network filter trained weights for each layer #############################
+Demo #2 Verify if the cfg file fully matches with the weights file (ie. the weights were trained with the cfg).
+From demo #1, we know that yolov3-tiny.cfg contains 24 layers, now we extract all 24 layers from the weights files to be tested.
+(1) ./darknet partial cfg/yolov3-tiny.cfg darknet.weights darknet.weights.L24 24
+    => darknet.weights.L24 has a size of 34MB, darknet.weights only 28MB 
+       darknet.weights does not match with yolov3-tiny.cfg.
+(2) ./darknet partial cfg/yolov3-tiny.cfg darknet53.conv.74 darknet53.conv.74.L24 24 
+    => darknet53.conv.74.L24 has a size of 34MB, darknet53.conv.74 155MB 
+       darknet53.conv.74 does not match with yolov3-tiny.cfg.
+(3) ./darknet partial cfg/yolov3-tiny.cfg yolov3-tiny.weights yolov3-tiny.weights.L24 24
+    => yolov3-tiny.weights and yolov3-tiny.weights.L24 both have a size of 34MB
+       It's highly probable this yolov3-tiny.weights we got was PRE-TRAINED for yolov3-tiny.cfg
+
+
+Demo #3 Save the weights to images
+./darknet visualize cfg/yolov3-tiny.cfg alexnet.weights
+./darknet visualize cfg/yolov3-tiny.cfg vgg-16.weights
+./darknet visualize cfg/yolov3-tiny.cfg darknet.weights
+./darknet visualize cfg/yolov3-tiny.cfg darknet53.conv.74.L24
+./darknet visualize cfg/yolov3-tiny.cfg yolov3-tiny.weights    // Looks more pretty than the others, I think.
+Check the layer-0 image for the above cases, the last one looks more regular/pretty since the cfg matches with the weights file.
+
+
+Demo #4 Print Network filter trained weights for each layer
+./darknet print_all cfg/yolov3-tiny.cfg yolov3-tiny.weights
 
 ======== Layer 0 ========
 [
