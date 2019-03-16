@@ -1,18 +1,27 @@
 1. cd ~/git
-   git clone https://github.com/pjreddie/darknet.git darknet.git
-
+   git clone https://github.com/joehuang74/darknet.git darknet.git
+   (Or from the original branch: https://github.com/pjreddie/darknet.git darknet.git)
+   
 2. Eclipse
    File -> New -> Makefile project with existing codes -> Linux GCC
 
-3. Modify Makefile to add debug flags for build
-   CFLAGS += -DDEBUG -g3
+3. Check out the study branch
+   Git Repositories -> darknet.git -> Branches -> Check out branch darknet_study
 
-4. Project -> Build All
+4. Modify Makefile
+  (1) Add debug flags for build
+      Change DEBUG=0 to DEBUG=1 in 5th line of Makefile.
+      (Or add a debug flag: CFLAGS += -DDEBUG -g3)
+  (2) For eclipse debugging, set GPU/CUDNN flag to 0
+  	  GPU=0
+	  CUDNN=0
+	  OPENCV=1
+	  (Set to 1 to build an GPU-ready executable for performing training/detection tasks)
 
-5. Right click on the compiled executable "darknet" 
+5. Project -> Build All
+
+6. Right click on the compiled executable "darknet" 
    -> Debug as -> Debug Configuration -> set arguments for running
 
-6. Sources: src, examples/darknet.c
-   
-
+7. Sources: src, examples/darknet.c, examples/detector.c,...
 
