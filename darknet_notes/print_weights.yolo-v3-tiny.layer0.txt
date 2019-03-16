@@ -1,7 +1,7 @@
 Usages:
-Print layer-0 trained weights for yolo-v3-tiny network filters: darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 0
-Print for all layers: darknet print_all cfg/yolov3-tiny.cfg darknet53.conv.74
-Save the weights to images: darknet visualize cfg/yolov3-tiny.cfg darknet53.conv.74
+Print layer-0 trained weights for yolo-v3-tiny network filters: darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights 0
+Print for all layers: darknet print_all cfg/yolov3-tiny.cfg yolov3-tiny.weights
+Save the weights to images: darknet visualize cfg/yolov3-tiny.cfg yolov3-tiny.weights
 References: scripts/print_weights.sh and scripts/print_weights_all.sh.
 
 Notes:
@@ -38,7 +38,7 @@ layer     filters    size              input                output
    21 conv    256  3 x 3 / 1    26 x  26 x 384   ->    26 x  26 x 256  1.196 BFLOPs
    22 conv    255  1 x 1 / 1    26 x  26 x 256   ->    26 x  26 x 255  0.088 BFLOPs
    23 yolo
-Loading weights from darknet53.conv.74...Network size: 24
+Loading weights from yolov3-tiny.weights...Network size: 24
 net->n = 24
 Done!
 

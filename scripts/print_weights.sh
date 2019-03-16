@@ -7,13 +7,13 @@
 cd ..
 
 # Print layer-0 weights
-./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 0
+./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights 0
 #./darknet print cfg/yolov3-tiny.cfg darknet.weights 0 # This weights are not for yolo-v3, see what happens
 
 # Print layer-6 weights
-./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 6
+./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights 6
 #./darknet print cfg/yolov3-tiny.cfg darknet.weights 6 # This weights are not for yolo-v3, see what happens
 
 # Print layer-22 weights
-./darknet print cfg/yolov3-tiny.cfg darknet53.conv.74 22
+./darknet print cfg/yolov3-tiny.cfg yolov3-tiny.weights 22
 #./darknet print cfg/yolov3-tiny.cfg darknet.weights 22 # This weights are not for yolo-v3, see what happens

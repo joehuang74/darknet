@@ -65,8 +65,8 @@
 	random=1
 
 
-(2) for yolo-v3 下載darknet53.conv.74
-(3) darknet detector train n5_tunnel_1000/obj.data n5_tunnel_1000/yolov3-tiny-n5-tunnel.cfg darknet53.conv.74
+(2) for yolo-v3-tiny 下載yolov3-tiny.weights
+(3) darknet detector train n5_tunnel_1000/obj.data n5_tunnel_1000/yolov3-tiny-n5-tunnel.cfg yolov3-tiny.weights
 
 -> 執行訓練時有錯誤: Couldn't open file: /home/j/data/n5_tunnel_extracted_labels_darknet_1000/trainset/./160169.txt
 -> image字串會被取代為label以取得標註的設定檔!!!!!
