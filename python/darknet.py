@@ -22,6 +22,17 @@ class BOX(Structure):
                 ("y", c_float),
                 ("w", c_float),
                 ("h", c_float)]
+    
+class BOX_LABEL(Structure):
+    _fields_ = [("id", c_int),
+                ("x", c_float),
+                ("y", c_float),
+                ("w", c_float),
+                ("h", c_float),
+                ("left", c_float),
+                ("right", c_float),
+                ("top", c_float),
+                ("bottom", c_float)]
 
 class DETECTION(Structure):
     _fields_ = [("bbox", BOX),
@@ -99,6 +110,10 @@ letterbox_image = lib.letterbox_image
 letterbox_image.argtypes = [IMAGE, c_int, c_int]
 letterbox_image.restype = IMAGE
 
+crop_image = lib.crop_image
+crop_image.argtypes = [IMAGE, c_int, c_int, c_int, c_int]
+crop_image.restype = IMAGE
+
 load_meta = lib.get_metadata
 lib.get_metadata.argtypes = [c_char_p]
 lib.get_metadata.restype = METADATA
@@ -110,9 +125,19 @@ load_image.restype = IMAGE
 rgbgr_image = lib.rgbgr_image
 rgbgr_image.argtypes = [IMAGE]
 
+read_boxes = lib.read_boxes
+read_boxes.argtypes = [c_char_p, POINTER(c_int)]
+read_boxes.restype = POINTER(BOX_LABEL)
+
 predict_image = lib.network_predict_image
 predict_image.argtypes = [c_void_p, IMAGE]
 predict_image.restype = POINTER(c_float)
+
+show_image = lib.show_image
+show_image.argtypes = [IMAGE, c_char_p, c_int]
+
+save_image = lib.save_image
+save_image.argtypes = [IMAGE, c_char_p]
 
 def classify(net, meta, im):
     out = predict_image(net, im)

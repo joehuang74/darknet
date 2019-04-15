@@ -1,0 +1,11 @@
+Process for training a model to compare two images  (Last update: 2019/04/15)
+1. Train a detection model
+2. Perform pseudo-labeling with the trained model
+   Use scripts/pseudo_label.py to derive more training data
+3. Use scripts/crop.py to extract objects (from label files) as image files
+   (To do) Data augmentation to derive more training data
+4. (To do) Prepare dataset for training compare.c
+   Input is two images merged side by side into one image.
+   Positive: Same object (Two similar images)
+   Negative: Two unmatched images
+5. (To do) Training comppare.c

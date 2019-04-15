@@ -1,0 +1,15 @@
+1. Shared native library
+   libdarknet.so is in the darknet project root.
+   (1) export LD_LIBRARY_PATH=/home/j/git/darknet.git:/usr/local/cuda/lib64:${LD_LIBRARY_PATH}
+   (2) (Eclipse) Run configurations -> Environment -> Add LD_LIBRARY_PATH
+ 
+2. Python wrap
+   darknet.py is in the sub-directory python under darknet project root
+   Refer to darknet.h to extend darknet.py.
+   
+3. To include darknet.py
+   import sys, os
+   sys.path.append(os.path.join(os.getcwd(),'python/'))
+   import darknet as dn
+   
+ 
