@@ -400,20 +400,22 @@ void validate_classifier_single(char *datacfg, char *filename, char *weightfile)
         //show_image(im, "orig");
         //show_image(crop, "cropped");
         //cvWaitKey(0);
-        float *pred = network_predict(net, crop.data);
+        float *pred = network_predict(net, crop.data); // network predictions(Probability for each class), eg. softmax outputs
         if(net->hierarchy) hierarchy_predictions(pred, net->outputs, net->hierarchy, 1, 1);
 
         free_image(im);
         free_image(crop);
-        top_k(pred, classes, topk, indexes);
+        top_k(pred, classes, topk, indexes); // derive indexes of topk classes
+        // printf("%d: top-1 predicted class: %d (acc: %f), top-2 predicted class: %d (acc: %f)\n", i, indexes[0], pred[indexes[0]], indexes[1], pred[indexes[1]]);
 
-        if(indexes[0] == class) avg_acc += 1;
-        for(j = 0; j < topk; ++j){
+        if(indexes[0] == class) avg_acc += 1; // Considered correct only if top-1 prediction is correct
+        for(j = 0; j < topk; ++j){  // Considered correct if one of the topk predictions is correct
             if(indexes[j] == class) avg_topk += 1;
         }
 
-        printf("%s, %d, %f, %f, \n", paths[i], class, pred[0], pred[1]);
-        printf("%d: top 1: %f, top %d: %f\n", i, avg_acc/(i+1), topk, avg_topk/(i+1));
+        printf("%d: %s, actual class=%d, class-0 prob=%f, class-1 prob=%f, class-2 prob=%f, \n",i , paths[i], class, pred[0], pred[1], pred[2]);
+        printf("%d: top 1 avg acc: %f, top %d avg acc: %f\n\n", i, avg_acc/(i+1), topk, avg_topk/(i+1));
+
     }
 }
 
